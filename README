@@ -1,0 +1,56 @@
+Test::MogileFS::Client
+~~~~~~~~~~~~~~~~~~~~~~
+
+* 使い方
+
+MogileFS に MogileFS::Client (を継承した子クラス) 経由でアクセスしてい
+ると、このクラスのモック Test::MogileFS::Client と設定で切り替えられる
+ようにしておきましょう。
+
+  $mogilefs_client_class = {
+    production => 'MyApp::MogileFS::Client',
+    test => 'Test::MogileFS::Client',
+  }->{$env};
+  eval qq{ require $mogilefs_client_class } or die $@;
+  my $mogile = $mogilefs_client_class->new(...);
+
+Test::MogileFS::Client は /tmp 内に MogileFS ストレージの代替を作ります。
+テストコードでは、実行前に set_test_root_directory メソッドを呼び出して
+新しい一時ディレクトリを設定させましょう。 (他のテストコードの影響を排
+除するためです。)
+
+  use Test::MogileFS::Client;
+  
+  sub _test : Test(2) {
+    Test::MogileFS::Client->set_test_root_directory;
+    ...
+  }
+
+* テスト
+
+  $ make test
+
+で依存モジュールを ./local にインストールしてテストを実行します。
+
+また、 Travis CI <https://travis-ci.org/wakaba/perl-test-mogilefs> 
+で自動的にテストが実行されています。
+
+* 入手
+
+このモジュールの最新版は GitHub
+<https://github.com/wakaba/perl-test-mogilefs> にあります。
+
+* 著者
+
+若葉 <wakabatan@hatena.ne.jp>。
+
+* 謝辞
+
+このモジュールは元々はうごメモはてなチームにおいて開発されました。
+
+* ライセンス
+
+Copyright 2009-2013 Hatena <http://www.hatena.ne.jp/company/>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
